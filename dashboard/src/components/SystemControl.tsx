@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { PowerIcon, WifiIcon, WifiOffIcon, RefreshCwIcon, AlertCircleIcon, CheckCircleIcon } from 'lucide-react';
+import { API_ENDPOINTS } from '@/lib/config';
 
 interface SystemStatus {
   api_online: boolean;
@@ -17,7 +18,7 @@ export default function SystemControl() {
     setChecking(true);
     try {
       // Check API health
-      const response = await fetch('http://localhost:8000/health/live');
+      const response = await fetch(API_ENDPOINTS.health);
       if (response.ok) {
         setStatus({
           api_online: true,

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { TrendingUpIcon, TrendingDownIcon, ActivityIcon, BarChart3Icon, RefreshCwIcon } from 'lucide-react';
+import { API_ENDPOINTS } from '@/lib/config';
 
 interface MicrostructureData {
   symbol: string;
@@ -67,7 +68,7 @@ export default function MicrostructureDashboard({ symbol }: MicrostructureDashbo
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/microstructure/${symbol}`);
+      const response = await fetch(API_ENDPOINTS.microstructure(symbol));
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }

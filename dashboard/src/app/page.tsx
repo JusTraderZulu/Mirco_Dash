@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { LayoutDashboard, TrendingUp, MessageSquare, Settings } from 'lucide-react';
+import { API_ENDPOINTS } from '@/lib/config';
 
 // Dynamically import components with no SSR to avoid hydration issues
 const AssetSelector = dynamic(() => import('@/components/AssetSelector'), {
@@ -65,7 +66,7 @@ export default function Home() {
     // Fetch available assets on component mount
     const fetchAvailableAssets = async () => {
       try {
-        const response = await fetch('http://localhost:8000/assets/available');
+        const response = await fetch(API_ENDPOINTS.assets);
         if (!response.ok) {
           console.warn(`API returned ${response.status}, using default assets`);
           return;

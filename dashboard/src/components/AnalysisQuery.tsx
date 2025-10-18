@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { SendIcon, BotIcon, UserIcon, LoaderIcon } from 'lucide-react';
+import { API_ENDPOINTS } from '@/lib/config';
 
 interface AnalysisQueryProps {
   symbol: string;
@@ -30,7 +31,7 @@ export default function AnalysisQuery({ symbol }: AnalysisQueryProps) {
     setError(null);
 
     try {
-      const res = await fetch('http://localhost:8000/analysis/query', {
+      const res = await fetch(API_ENDPOINTS.analysis, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
