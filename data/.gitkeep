@@ -1,0 +1,3 @@
+# This file ensures the data directory is tracked by Git
+# Database files are generated at runtime
+

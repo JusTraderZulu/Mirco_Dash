@@ -1,0 +1,72 @@
+env: paper
+clock:
+  timezone: America/New_York
+  ntp_servers: ["time.google.com", "pool.ntp.org"]
+  max_clock_skew_ms: 30
+
+data_feed:
+  source: polygon
+  polygon:
+    ws_url: wss://socket.polygon.io/crypto
+    api_key: ${POLYGON_API_KEY}
+    channels: [l2, trades, quotes]      # use l2 minimum; trades/quotes optional
+    symbols: ["X:BTC-USD"]              # Polygon format
+    snapshot_interval_sec: 60
+
+execution:
+  default_broker: alpaca                 # alpaca is default; coinbase allowed per routes
+  dry_run: true                          # true = simulate; false = send to broker
+  tif: IOC
+  order_type_preference: limit_then_market
+  idempotency_key_ttl_sec: 3600
+  routes:
+    "BTC-USD": alpaca_paper              # per-symbol route (values: alpaca_live|alpaca_paper|coinbase_live)
+
+risk:
+  max_daily_loss_pct: 3.0
+  max_position_pct: 25.0
+  max_open_positions: 3
+  slippage_bps_limit: 10
+  cooldown_min: 15
+  per_symbol:
+    BTC-USD:
+      max_leverage: 1
+      max_qty: 0.05
+
+sizing:
+  method: fixed_fractional
+  fraction_of_equity: 0.002  # 0.2% of $100k = $200 per trade (~200 shares of BITI)
+  atr_lookback: 14
+
+signals:
+  cadence:
+    full_window_sec: 300
+    light_window_sec: 60
+  features: [ofi, spread_change, ap_ratio, qv]
+  thresholds:
+    bias_confidence_min: 0.6
+
+monte_carlo:
+  horizon_sec: 300
+  paths: 1000
+  model: gbm
+  vol_estimator: ewma
+
+portfolio:
+  rebalance_cadence_sec: 60
+  take_profit_atr_mult: 2.0
+  stop_atr_mult: 1.2
+  scale_out_levels: [0.5, 1.0, 1.5]
+
+logging:
+  level: INFO
+  json: true
+  file_path: logs/session_{date}.jsonl
+
+storage:
+  sqlite_path: ./data/tepm.sqlite
+  object_path: ./data/snapshots
+
+feature_flags:
+  manual_approval_required: false
+  l3_support: false
